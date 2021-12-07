@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security https://www.springframework.org/schema/security/spring-security.xsd">
+
+
+    <security:ldap-server />
+    <security:ldap-user-service/>
+
+    <security:http>
+        <security:intercept-url pattern="/*" access="hasRole('USER')"/>
+        <security:form-login login-page="static/login.html" default-target-url="static/home.html" always-use-default-target="true"/>
+        <security:logout invalidate-session="true" logout-url="/logout"/>
+    </security:http>
+
+    <security:global-method-security mode="aspectj"/>
+
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:jdbc-user-service data-source-ref="pooledDataSource"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+</beans>

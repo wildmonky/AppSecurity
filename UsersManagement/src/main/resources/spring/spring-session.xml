@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+    <context:property-placeholder location="classpath:properties/session.properties"/>
+
+<!--    <bean id="mongoDuration" class="java.time.Duration">-->
+<!--        <constructor-arg name="seconds" value="1800"/>-->
+<!--        <constructor-arg name="nanos" value="0"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="mongoSessionConverter" class="org.springframework.session.data.mongo.JdkMongoSessionConverter">-->
+<!--        <constructor-arg name="maxInactiveInterval" ref="mongoDuration"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="mongoHttpSessionConfiguration" class="org.springframework.session.data.mongo.config.annotation.web.http.MongoHttpSessionConfiguration">-->
+<!--&lt;!&ndash;        <property name="mongoSessionConverter" ref="mongoSessionConverter"/>&ndash;&gt;-->
+<!--        <property name="maxInactiveIntervalInSeconds" value="${session.maxInactiveIntervalInSeconds}"/>-->
+<!--        <property name="httpSessionIdResolver" value="${session.redis.port}"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="mongoServerAddress" class="com.mongodb.ServerAddress">-->
+<!--        <constructor-arg name="host" value="${session.mongo.host}"/>-->
+<!--        <constructor-arg name="port" value="${session.mongo.port}"/>-->
+<!--    </bean>-->
+
+<!--    <bean name="mongoClientOperationsBuilder" class="com.mongodb.MongoClientOptions.Builder"/>-->
+
+<!--    <bean id="mongoClientOperations" class="com.mongodb.MongoClientOptions">-->
+<!--        <constructor-arg ref="mongoClientOperationsBuilder"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="mongoCredential" class="com.mongodb.MongoCredential">-->
+<!--        <constructor-arg name="mechanism" value="${session.mongo.mechanism}"/>-->
+<!--        <constructor-arg name="userName" value="${session.mongo.username}"/>-->
+<!--        <constructor-arg name="password" value="${session.mongo.password}"/>-->
+<!--        <constructor-arg name="source" value="${session.mongo.source}"/>-->
+<!--    </bean>-->
+
+    <bean id="mongoClientDatabaseFactory" class="org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory">
+        <constructor-arg name="connectionString" value="${session.mongo.connectionString}"/>
+    </bean>
+
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongoClientDatabaseFactory"/>
+    </bean>
+
+    <bean id="mongoIndexedSessionRepository" class="org.springframework.session.data.mongo.MongoIndexedSessionRepository">
+        <constructor-arg name="mongoOperations" ref="mongoTemplate"/>
+    </bean>
+<!--    <bean id="redisStandaloneConfiguration" class="org.springframework.data.redis.connection.RedisStandaloneConfiguration">-->
+<!--        <property name="hostName" value="${session.redis.hostName}"/>-->
+<!--        <property name="port" value="${session.redis.port}"/>-->
+<!--        <property name="database" value="${session.redis.database}"/>-->
+<!--        <property name="username" value="${session.redis.username}"/>-->
+<!--        <property name="password" value="${session.redis.password}"/>-->
+<!--    </bean>-->
+
+<!--    <bean class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory">-->
+<!--        <constructor-arg name="redisConfiguration" ref="redisStandaloneConfiguration"/>-->
+<!--    </bean>-->
+
+</beans>

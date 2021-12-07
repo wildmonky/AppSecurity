@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+
+    <context:property-placeholder location="classpath:properties/amqp.properties"/>
+
+    <!--Rabbit ConnectionFactory-->
+    <bean id="rabbitConnectionFactoryBean" class="org.springframework.amqp.rabbit.connection.RabbitConnectionFactoryBean">
+        <property name="useSSL" value="false"/>
+        <property name="host" value="${amqp.rabbit.host}"/>
+        <property name="port" value="${amqp.rabbit.port}"/>
+        <property name="username" value="${amqp.rabbit.username}"/>
+        <property name="password" value="${amqp.rabbit.password}"/>
+        <property name="skipServerCertificateValidation" value="true"/>
+        <property name="enableHostnameVerification" value="false"/>
+        <!--disable rabbit self retry,use spring amqp-->
+        <property name="automaticRecoveryEnabled" value="false"/>
+<!--        <property name="connectionTimeout" value=""/>-->
+    </bean>
+
+    <bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
+        <property name="backOffPolicy">
+            <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
+                <property name="initialInterval" value="100"/>
+                <property name="maxInterval" value="30000"/>
+                <property name="multiplier" value="2.0"/>
+            </bean>
+        </property>
+    </bean>
+<!--    &lt;!&ndash;Pooled Connection Factory&ndash;&gt;-->
+<!--    <bean id="amqpConnectionFactory" class="org.springframework.amqp.rabbit.connection.PooledChannelConnectionFactory">-->
+<!--        <constructor-arg name="rabbitConnectionFactory" ref="rabbitConnectionFactory"/>-->
+<!--    </bean>-->
+
+    <bean id="simplePublisherReturnCallback" class="org.lizhao.amqp.publisher.SimplePublisherReturnCallback"/>
+
+    <bean id="simplePublisherConfirmCallback" class="org.lizhao.amqp.publisher.SimplePublisherConfirmCallback"/>
+
+    <task:executor id="threadPoolTaskExecutor"
+                   pool-size="5"
+    />
+
+    <!--Message converter beans definition-->
+    <!--for String,Serialized POJO,byte array-->
+    <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter">
+        <property name="defaultCharset" value="utf-8"/>
+        <property name="allowedListPatterns">
+            <list>
+                <value>${amqp.rabbit.messageConvert.jackson2json.trustPackage}</value>
+            </list>
+        </property>
+    </bean>
+    <!--for json-->
+    <bean id="jackson2JsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter">
+        <property name="assumeSupportedContentType" value="false"/>
+        <property name="defaultCharset" value="utf-8"/>
+        <property name="classMapper">
+            <bean class="org.springframework.amqp.support.converter.DefaultClassMapper">
+                <property name="defaultType" value="java.lang.String"/>
+                <property name="trustedPackages" value="${amqp.rabbit.messageConvert.jackson2json.trustPackage}"/>
+            </bean>
+        </property>
+    </bean>
+    <!--for xml-->
+    <bean id="jackson2XmlMessageConverter" class="org.springframework.amqp.support.converter.Jackson2XmlMessageConverter">
+        <property name="assumeSupportedContentType" value="false"/>
+        <property name="defaultCharset" value="utf-8"/>
+        <property name="classMapper">
+            <bean class="org.springframework.amqp.support.converter.DefaultClassMapper">
+                <property name="defaultType" value="java.lang.String"/>
+                <property name="trustedPackages" value="${amqp.rabbit.messageConvert.jackson2json.trustPackage}"/>
+            </bean>
+        </property>
+    </bean>
+    <!--message converter delegate-->
+    <bean id="contentTypeDelegatingMessageConverter" class="org.springframework.amqp.support.converter.ContentTypeDelegatingMessageConverter">
+        <property name="delegates">
+            <map>
+                <entry key="text/plain" value-ref="simpleMessageConverter"/>
+                <entry key="application/x-java-serialized-object" value-ref="simpleMessageConverter"/>
+                <entry key="application/json" value-ref="jackson2JsonMessageConverter"/>
+                <entry key="application/xml" value-ref="jackson2XmlMessageConverter"/>
+            </map>
+        </property>
+    </bean>
+
+    <rabbit:annotation-driven/>
+
+    <!--create a CachingConnectionFactory-->
+    <rabbit:connection-factory id="rabbitConnectionFactory"
+                               connection-factory="rabbitConnectionFactoryBean"
+                               executor="threadPoolTaskExecutor"
+                               publisher-returns="true"
+                               confirm-type="CORRELATED"
+                               cache-mode="CHANNEL"
+                               channel-cache-size="25"
+    />
+
+    <bean id="rabbitTemplate" class="org.springframework.amqp.rabbit.core.RabbitTemplate">
+        <property name="connectionFactory" ref="rabbitConnectionFactory"/>
+        <property name="channelTransacted" value="false"/>
+        <property name="retryTemplate" ref="retryTemplate"/>
+        <!--强制性参数(无法发送到queue时，强制返回信息给publisher)，只有当returnsCallback被设置时才会应用-->
+        <property name="mandatory" value="true"/>
+        <property name="returnsCallback" ref="simplePublisherReturnCallback"/>
+        <!--发送确认，消息有Exchange发送到queue时，Exchange会返回一个确认，当消息由queue发送到receiver，receiver会返回一个确认-->
+        <property name="confirmCallback" ref="simplePublisherConfirmCallback"/>
+        <property name="usePublisherConnection" value="true"/>
+    </bean>
+
+<!--    <rabbit:template id="rabbitTemplate"-->
+<!--                     connection-factory="rabbitConnectionFactory"-->
+<!--                     mandatory="true"-->
+<!--                     channel-transacted="false"-->
+<!--                     retry-template="retryTemplate"-->
+<!--                     return-callback="simpleSendReturnCallback"-->
+<!--                     confirm-callback="simpleConfirmCallback"-->
+<!--    />-->
+
+    <!--create a portable administrative operation-->
+    <rabbit:admin id="rabbitAdmin"
+                  connection-factory="rabbitConnectionFactory"
+    />
+
+    <bean id="rabbitListenerContainerFactory" class="org.springframework.amqp.rabbit.config.DirectRabbitListenerContainerFactory">
+        <property name="connectionFactory" ref="rabbitConnectionFactory"/>
+        <property name="consumersPerQueue" value="3"/>
+        <property name="messageConverter" ref="contentTypeDelegatingMessageConverter"/>
+        <property name="idleEventInterval" value="60000"/>
+        <property name="messagesPerAck" value="1"/>
+<!--        <property name="monitorInterval" value=""/>-->
+    </bean>
+
+<!--    &lt;!&ndash;create a queue for consumers to retrieve message&ndash;&gt;-->
+<!--    <rabbit:queue name="queue"/>-->
+
+    <context:component-scan base-package="org.lizhao.amqp"/>
+</beans>

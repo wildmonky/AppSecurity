@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <context:annotation-config/>
+    <context:spring-configured/>
+    <context:property-placeholder order="0" file-encoding="utf-8" location="classpath:properties/application.properties"/>
+    <context:property-override order="0" />
+    <context:component-scan base-package="org.lizhao">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+
+    <!--aop-->
+    <aop:aspectj-autoproxy/>
+
+    <!--pooled datasource-->
+    <bean id="pooledDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="description" value="${database.description}"/>
+        <property name="dataSourceName" value="${database.sourceName}"/>
+        <property name="driverClass" value="${database.driverClass}"/>
+        <property name="jdbcUrl" value="${database.jdbcUrl}"/>
+        <property name="user" value="${database.user}"/>
+        <property name="password" value="${database.password}"/>
+    </bean>
+
+    <!--mybatis sqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="pooledDataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:mapper/*"/>
+    </bean>
+
+    <!--mybatis sqlSession-->
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+
+    <!--scan the dao interface-->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="org.lizhao.dao"/>
+        <property name="sqlSessionTemplateBeanName" value="sqlSessionTemplate"/>
+    </bean>
+
+    <!--jdbc transaction manager-->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="pooledDataSource"/>
+    </bean>
+    <!--open @Transactional-->
+    <tx:annotation-driven transaction-manager="dataSourceTransactionManager"/>
+
+</beans>

@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.lizhao</groupId>
+  <artifactId>AppSecurity</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <modules>
+    <module>UsersManagement</module>
+  </modules>
+  <packaging>pom</packaging>
+
+  <name>AppSecurity Maven Webapp</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <junit.version>4.12</junit.version>
+    <org.springframework.version>5.2.3.RELEASE</org.springframework.version>
+    <org.springframework.session.version>2020.0.3</org.springframework.session.version>
+    <org.springframework.amqp.version>2.3.10</org.springframework.amqp.version>
+
+    <apache.commons.pool2.version>2.11.1</apache.commons.pool2.version>
+
+    <c3p0.version>0.9.5.5</c3p0.version>
+    <aspectJ.version>1.9.4</aspectJ.version>
+
+    <flyway.version>7.15.0</flyway.version>
+
+    <mybatis.version.mybatis>3.5.7</mybatis.version.mybatis>
+    <mybatis.version.mybatis-spring>2.0.6</mybatis.version.mybatis-spring>
+    <mybatis.version.mybatis-plus>3.4.3.4</mybatis.version.mybatis-plus>
+
+    <servlet-api.version>4.0.1</servlet-api.version>
+    <jsp-api.version>2.3.3</jsp-api.version>
+
+    <slf4j.version>2.0.0-alpha2</slf4j.version>
+    <log4j2.version>2.14.1</log4j2.version>
+
+    <!--db driver-->
+    <mongodb-java-driver.version>3.12.10</mongodb-java-driver.version>
+
+    <!--application micrometer-->
+    <micrometer.version>1.7.4</micrometer.version>
+
+    <fasterxml.version>2.13.0</fasterxml.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <!--spring core上下文-->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <!--spring context上下文 ApplicationContext-->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <!--spring context support 上下文支持，将第三方库整合到上下文中，从而提供支持-->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <!--spring beans BeansFactory-->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <!-- Spring aop依赖 -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <!-- Spring aspects依赖 -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aspects</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <!-- aspectj依赖 -->
+      <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjrt</artifactId>
+        <version>${aspectJ.version}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <!-- Spring jdbc依赖 -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>compile</scope>
+      </dependency>
+<!--      <dependency>-->
+<!--        <groupId>org.springframework.data</groupId>-->
+<!--        <artifactId>spring-data-bom</artifactId>-->
+<!--        <version></version>-->
+<!--      </dependency>-->
+      <dependency>
+        <groupId>com.mchange</groupId>
+        <artifactId>c3p0</artifactId>
+        <version>${c3p0.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <!--Spring事物依赖 -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <!-- Spring web依赖 -->
+      <dependency>
+        <groupId>org.springframework.session</groupId>
+        <artifactId>spring-session-bom</artifactId>
+        <version>${org.springframework.session.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <!--Spring webmvc依赖 -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <!--spring mq-->
+      <dependency>
+        <groupId>org.springframework.amqp</groupId>
+        <artifactId>spring-rabbit</artifactId>
+        <version>${org.springframework.amqp.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <!--spring security bom(bill of materials)-->
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-bom</artifactId>
+        <version>${org.springframework.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Spring test依赖 -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${org.springframework.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <!--junit test-->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <!--flyway-->
+      <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-core</artifactId>
+        <version>${flyway.version}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <!--mybatis-->
+      <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis</artifactId>
+        <version>${mybatis.version.mybatis}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis-spring</artifactId>
+        <version>${mybatis.version.mybatis-spring}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus</artifactId>
+        <version>${mybatis.version.mybatis-plus}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <!--web -->
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>${servlet-api.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet.jsp</groupId>
+        <artifactId>javax.servlet.jsp-api</artifactId>
+        <version>${jsp-api.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!--apache common-->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-pool2</artifactId>
+        <version>${apache.commons.pool2.version}</version>
+      </dependency>
+      <!--log4j2-->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${log4j2.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!--slf4j-->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <!--slf4j for log4j and log4j2-->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${log4j2.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!--db-->
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver</artifactId>
+        <version>${mongodb-java-driver.version}</version>
+<!--        <type>pom</type>-->
+<!--        <scope>import</scope>--><!--引入pom文件不需加，只有在引入bom时需要，区别是bom中使用了dependencyManagement-->
+      </dependency>
+
+      <!--application micrometer-->
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-bom</artifactId>
+        <version>${micrometer.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${fasterxml.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+
+    </dependencies>
+  </dependencyManagement>
+
+<!--  <dependencies>-->
+
+<!--    &lt;!&ndash;spring core上下文&ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-core</artifactId>-->
+<!--    </dependency>-->
+
+<!--    &lt;!&ndash;spring context上下文 ApplicationContext&ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-context</artifactId>-->
+<!--    </dependency>-->
+<!--    &lt;!&ndash;spring context support 上下文支持，将第三方库整合到上下文中，从而提供支持&ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-context-support</artifactId>-->
+<!--    </dependency>-->
+
+<!--    &lt;!&ndash;spring beans BeansFactory&ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-beans</artifactId>-->
+<!--    </dependency>-->
+
+<!--    &lt;!&ndash; Spring aop依赖 &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-aop</artifactId>-->
+<!--    </dependency>-->
+<!--    &lt;!&ndash; Spring aspects依赖 &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-aspects</artifactId>-->
+<!--    </dependency>-->
+<!--    &lt;!&ndash; aspectj依赖 &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.aspectj</groupId>-->
+<!--      <artifactId>aspectjrt</artifactId>-->
+<!--    </dependency>-->
+
+<!--    &lt;!&ndash; Spring jdbc依赖 &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-jdbc</artifactId>-->
+<!--    </dependency>-->
+<!--    &lt;!&ndash;Spring事物依赖 &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-tx</artifactId>-->
+<!--    </dependency>-->
+
+<!--    &lt;!&ndash; Spring web依赖 &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-web</artifactId>-->
+<!--    </dependency>-->
+<!--    &lt;!&ndash;Spring webmvc依赖 &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-webmvc</artifactId>-->
+<!--    </dependency>-->
+
+<!--    &lt;!&ndash; Spring test依赖 &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-test</artifactId>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>junit</groupId>-->
+<!--      <artifactId>junit</artifactId>-->
+<!--    </dependency>-->
+<!--  </dependencies>-->
+
+  <build>
+    <finalName>AppSecurity</finalName>
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <plugins>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+<!--          <configuration>-->
+<!--            <resourceEncoding>utf-8</resourceEncoding>-->
+<!--          </configuration>-->
+          <version>3.2.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

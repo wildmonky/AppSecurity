@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+    <!-- setting 设置开多了出错？ -->
+    <settings>
+        <!-- 一级缓存 -->
+        <setting name="localCacheScope" value="SESSION"/>
+        <!-- 设置二级缓存关闭-->
+        <setting name="cacheEnabled" value="false"/>
+        <!--<setting name="lazyLoadingEnabled" value="true"/> -->
+        <!--<setting name="aggressiveLazyLoading" value="true"/> -->
+        <!--<setting name="multipleResultSetsEnabled" value="true"/> -->
+        <setting name="useColumnLabel" value="true"/>
+        <setting name="useGeneratedKeys" value="true"/>
+
+        <setting name="defaultExecutorType" value="REUSE"/>
+        <!--<setting name="defaultStatementTimeout" value="25"/> -->
+        <!--<setting name="safeRowBoundsEnabled" value="FALSE"/> -->
+
+        <!-- 开启自动映射,即当resultMap中没有设置result也会自动映射进bean -->
+        <setting name="autoMappingBehavior" value="PARTIAL"/>
+        <!-- 是否开启驼峰命名规则 -->
+        <setting name="mapUnderscoreToCamelCase" value="TRUE"/>
+
+        <!--<setting name="jdbcTypeForNull" value="OTHER"/> -->
+        <!--<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/> -->
+        <!-- 找不到该类，只有XMLLanguageDriver -->
+        <!--  <setting name="defaultScriptingLanguage" value="org.apache.ibatis.scripting.xmltags.XMLDynamicLanguageDriver"/>-->
+        <!-- resultset 结果集中的值为NULL时是否调用setter方法 -->
+        <!--<setting name="callSettersOnNulls" value="FALSE"/> -->
+        <!-- <setting name="logPrefix" value=""/> -->
+        <!-- 指定mybatis的log（日志）使用log4j2而不是其他日志框架 -->
+        <setting name="logImpl" value="LOG4J2"/>
+        <!-- <setting name="proxyFactory" value="CGLIB"/> -->
+    </settings>
+
+    <!--为JavaBean配置别名，在SQL config的XML文件中可以使用别名来
+  指定resultType，避免用package_name.class_name的繁琐。
+ 直接使用类名，不区分大小写。还org.mybatis.spring.SqlSsssionFactory中
+设置更方便。
+  如下：直接扫描包
+ -->
+    <typeAliases>
+        <package name="org.school.model"/>
+    </typeAliases>
+
+    <!-- 指定mapper(映射器)到哪去获得SQL映射文件
+<mappers>
+  <package name="mapper" />
+</mappers>
+已在Spring_config中配置
+-->
+    <!--  
+<environments default="develop">
+  <environment id="develop">
+             事务交由Spring容器管理 
+    <transactionManager type="MANAGED"/>
+    <dataSource type="JDBC">
+     <property name="driver" value=""/>
+     <property name="url" value=""/>
+     <property name="username" value=""/>
+     <property name="password" value=""/>
+    </dataSource    
+  </environment>  
+</environments>
+-->
+</configuration>
